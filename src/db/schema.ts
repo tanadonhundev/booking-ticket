@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   mysqlTable,
   varchar,
@@ -5,6 +6,9 @@ import {
   timestamp,
   boolean,
   mysqlEnum,
+  int,
+  decimal,
+  primaryKey,
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("user", {
@@ -67,3 +71,42 @@ export const verification = mysqlTable("verification", {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
 });
+
+export const ticket = mysqlTable(
+  "ticket",
+  {
+    id: int("id").autoincrement().notNull(),
+    name: varchar("name", { length: 100 }).notNull(), // ชื่อตั๋ว เช่น “คอนเสิร์ต A”
+    price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+    // จำนวนทั้งหมดที่ขายได้
+    total: int("total").notNull(),
+    // จำนวนคงเหลือ
+    remaining: int("remaining").notNull(),
+    // สถานะว่าง / เต็ม
+    status: mysqlEnum("status", ["available", "sold_out"])
+      .notNull()
+      .default("available"),
+
+    // เวลาที่สร้าง
+    createdAt: timestamp("created_at", { mode: "string" }).default(
+      sql`(now())`
+    ),
+  },
+  (table) => [primaryKey({ columns: [table.id], name: "ticket_id" })]
+);
+
+export const booking = mysqlTable(
+  "booking",
+  {
+    id: int("id").autoincrement().notNull(),
+    ticketId: int("ticket_id")
+      .notNull()
+      .references(() => ticket.id),
+    userId: varchar("user_id", { length: 36 }).notNull(),
+    quantity: int("quantity").notNull(),
+    createdAt: timestamp("created_at", { mode: "string" }).default(
+      sql`(now())`
+    ),
+  },
+  (table) => [primaryKey({ columns: [table.id], name: "booking_id" })]
+);
