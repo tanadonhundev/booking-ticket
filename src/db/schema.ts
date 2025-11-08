@@ -14,7 +14,7 @@ import {
 export const user = mysqlTable("user", {
   id: varchar("id", { length: 36 }).primaryKey(),
   name: text("name").notNull(),
-  role: mysqlEnum(["user", "admin"]).default("user"),
+  role: mysqlEnum(["user", "admin"]).default("admin"),
   email: varchar("email", { length: 255 }).notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
@@ -86,7 +86,6 @@ export const ticket = mysqlTable(
     status: mysqlEnum("status", ["available", "sold_out"])
       .notNull()
       .default("available"),
-
     // เวลาที่สร้าง
     createdAt: timestamp("created_at", { mode: "string" }).default(
       sql`(now())`
@@ -102,8 +101,9 @@ export const booking = mysqlTable(
     ticketId: int("ticket_id")
       .notNull()
       .references(() => ticket.id),
-    userId: varchar("user_id", { length: 36 }).notNull(),
-    quantity: int("quantity").notNull(),
+    name: varchar("name", { length: 255 }).notNull(), // เพิ่มชื่อ
+    email: varchar("email", { length: 255 }).notNull(), // เพิ่มอีเมล
+    capacity: int("capacity").notNull(),
     createdAt: timestamp("created_at", { mode: "string" }).default(
       sql`(now())`
     ),

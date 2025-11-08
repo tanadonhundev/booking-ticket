@@ -35,34 +35,34 @@ const LoginForm = () => {
   });
 
   const handleOnSubmit = async (data: z.infer<typeof formSchema>) => {
-    await authClient.signIn.email(
-      {
-        email: data.email,
-        password: data.password,
-      },
-      {
-        onRequest: (ctx) => {
-          //show loading
-          console.log("loading", ctx.body);
+      await authClient.signIn.email(
+        {
+          email: data.email,
+          password: data.password,
         },
-        onSuccess: async (ctx) => {
-          //redirect to the dashboard or sign in page
-          console.log("success", ctx.data);
-          // get session (client side)
-          const { data: session } = await authClient.getSession();
-          if (session?.user.role === "admin") {
-            router.replace("/admin");
-          } else if (session?.user.role === "user") {
-            router.replace("/");
-          }
-          // router.replace("/");
-          toast.success("เข้าสู่ระบบสำเร็จ");
-        },
-        onError: (ctx) => {
-          // display the error message
-          toast.error(ctx.error.message);
-        },
-      }
+        {
+          onRequest: (ctx) => {
+            //show loading
+            console.log("loading", ctx.body);
+          },
+          onSuccess: async (ctx) => {
+            //redirect to the dashboard or sign in page
+            console.log("success", ctx.data);
+            // get session (client side)
+            const { data: session } = await authClient.getSession();
+            if (session?.user.role === "admin") {
+              router.replace("/admin");
+            } else if (session?.user.role === "user") {
+              router.replace("/");
+            }
+            // router.replace("/");
+            toast.success("เข้าสู่ระบบสำเร็จ");
+          },
+          onError: (ctx) => {
+            // display the error message
+            toast.error(ctx.error.message);
+          },
+        }
     );
   };
 
@@ -74,7 +74,6 @@ const LoginForm = () => {
           <p className="mt-4 text-xl font-semibold tracking-tight">
             เข้าสู่ระบบ
           </p>
-
           <Form {...form}>
             <form
               className="w-full space-y-6"
