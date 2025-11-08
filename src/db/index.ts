@@ -5,9 +5,8 @@ import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 
 // drizzle schemma add relation for Query feature
-// import * as schema from "./schema";
+import * as schema from "./schema";
 // import * as relations from "./relations";
-
 
 //สร้าง connection ครั้งเดียว
 const connection = mysql.createConnection({
@@ -23,7 +22,7 @@ const connection = mysql.createConnection({
 const dbSingleton = async () => {
   return drizzle({
     client: await connection,
-    // schema: { ...schema, ...relations },
+    schema: { ...schema },
     mode: "default",
   });
 };

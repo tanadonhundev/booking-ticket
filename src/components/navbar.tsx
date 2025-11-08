@@ -17,7 +17,7 @@ const Navbar = () => {
           <Button variant="outline" className="hidden sm:inline-flex">
             <Link href={"/login"}> เข้าสู่ระบบ</Link>
           </Button>
-          <Button><Link href={"/sing-up"}>สมัครสามาชิก</Link></Button>
+          <Button><Link href={"/singup"}>สมัครสามาชิก</Link></Button>
 
           {/* Mobile Menu */}
           <div className="md:hidden">
