@@ -15,48 +15,33 @@ interface NavMenuProps extends ComponentProps<typeof NavigationMenu> {
 }
 
 export const NavMenu = ({ role, ...props }: NavMenuProps) => {
-  console.log(role);
+
+  console.log(role)
+  // กำหนดเมนูตาม role
+  const menuItems =
+    role === "user"
+      ? [
+          { label: "จองตั๋ว", href: "/" },
+          { label: "ยกเลิกจองตั๋ว", href: "/cancel" },
+        ]
+      : [
+          { label: "รายการจองทั้งหมด", href: "/admin/bookings" },
+          { label: "จัดการตั๋ว", href: "/admin/tickets" },
+        ];
+
   return (
     <NavigationMenu {...props}>
       <NavigationMenuList className="data-[orientation=vertical]:-ms-2 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-start data-[orientation=vertical]:justify-start">
-        {role === "user" && (
-          <NavigationMenuItem>
+        {menuItems.map((item) => (
+          <NavigationMenuItem key={item.href}>
             <NavigationMenuLink
               asChild
               className={navigationMenuTriggerStyle()}
             >
-              <Link href="/">จองตั๋ว</Link>
-            </NavigationMenuLink>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link href="/">ยกเลิกจองตั๋ว</Link>
+              <Link href={item.href}>{item.label}</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
-        )}
-
-        {role === "admin" && (
-          <>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link href="/admin/bookings">รายการจองทั้งหมด</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link href="/admin/tickets">จัดการตั๋ว</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </>
-        )}
+        ))}
       </NavigationMenuList>
     </NavigationMenu>
   );
