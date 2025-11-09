@@ -6,20 +6,43 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { CancelBooking } from "@/components/app/CancelBooking";
+import { Input } from "@/components/ui/input";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const formSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
 
 export default function CancelPage() {
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [bookings, setBookings] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
 
-  const handleSearch = async () => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    defaultValues: {
+      email: "",
+    },
+    mode: "onChange",
+    resolver: zodResolver(formSchema),
+  });
+
+  const handleSearch = async (data: z.infer<typeof formSchema>) => {
     try {
       setLoading(true);
       setError("");
-      const res = await axios.get(`/api/bookings/${email}`);
+      const res = await axios.get(`/api/bookings/${data.email}`);
       console.log(res.data);
       setBookings(res.data.bookings || []);
     } catch (error: any) {
@@ -40,37 +63,32 @@ export default function CancelPage() {
     <div>
       <div style={{ padding: "20px", maxWidth: "800px", margin: "auto" }}>
         <h2>ค้นหาการจองเพื่อตรวจสอบ / ยกเลิก</h2>
-
-        <div style={{ margin: "20px 0" }}>
-          <input
-            type="email"
-            placeholder="กรอกอีเมลที่ใช้จอง"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{
-              width: "60%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              marginRight: "10px",
-            }}
-          />
-
-          <button
-            onClick={handleSearch}
-            disabled={loading}
-            style={{
-              padding: "10px 20px",
-              background: "#ff4c4c",
-              color: "white",
-              borderRadius: "8px",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            {loading ? "กำลังค้นหา..." : "ค้นหา"}
-          </button>
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSearch)}>
+            <div className="flex space-x-5">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="กรอกอีเมลที่ใช้จอง"
+                        className="w-full"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" disabled={loading}>
+                {loading ? "กำลังค้นหา..." : "ค้นหา"}
+              </Button>
+            </div>
+          </form>
+        </Form>
 
         {error && (
           <p style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>

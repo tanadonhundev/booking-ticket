@@ -21,7 +21,7 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   capacity: z
     .string()
-    .transform((val) => parseFloat(val.replace(/[^0-9.]/g, ""))) // e.g., "$1,000" → 1000
+    .transform((val) => parseFloat(val.replace(/[^0-9.]/g, "")))
     .refine((val) => !isNaN(val), "ราคาต้องเป็นตัวเลขที่ถูกต้อง"),
 });
 

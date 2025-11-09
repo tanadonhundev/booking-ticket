@@ -46,7 +46,7 @@ export default function TicketTable() {
   return (
     <main className="p-8 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center">
-        🚌 ระบบขายตั๋วออนไลน์
+        🚌 ระบบจองตั๋วออนไลน์
       </h1>
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-200">
