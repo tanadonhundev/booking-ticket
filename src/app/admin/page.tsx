@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 type Booking = {
@@ -13,54 +14,31 @@ type Booking = {
 };
 
 export default function AdminBookingList() {
-  const [data, setData] = useState<Booking[]>([]);
-  const [available, setAvailable] = useState(0);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchBookings = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("/api/bookings");
+      setBookings(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // mock data จำลองจากฐานข้อมูล
-    const mockData = {
-      data: [
-        {
-          id: "1",
-          name: "ธนดล หุ่นสะดี",
-          email: "tanadon@example.com",
-          ticketNo: "TKT-001",
-          seats: 2,
-          date: "2025-11-08",
-          status: "confirmed",
-        },
-        {
-          id: "2",
-          name: "กิตติศักดิ์ ใจดี",
-          email: "kittisak@example.com",
-          ticketNo: "TKT-002",
-          seats: 1,
-          date: "2025-11-08",
-          status: "cancelled",
-        },
-        {
-          id: "3",
-          name: "ศิรินันท์ สุขใจ",
-          email: "sirinan@example.com",
-          ticketNo: "TKT-003",
-          seats: 3,
-          date: "2025-11-09",
-          status: "confirmed",
-        },
-      ],
-      available: 44,
-    };
-
-    setTimeout(() => {
-      setData(mockData.data);
-      setAvailable(mockData.available);
-    }, 400);
+    fetchBookings();
   }, []);
+
+  if (loading) return <p>กำลังโหลด...</p>;
 
   return (
     <main className="p-8">
       <h1 className="text-2xl font-bold mb-4">รายการจองทั้งหมด</h1>
-      <p className="text-lg mb-2">จำนวนที่ว่าง: {available}</p>
+      <p className="text-lg mb-2">จำนวนที่ว่าง: 200</p>
 
       <table className="border-collapse border border-gray-300 w-full text-left text-sm">
         <thead className="bg-gray-100">
@@ -74,24 +52,24 @@ export default function AdminBookingList() {
           </tr>
         </thead>
         <tbody>
-          {data.map((b) => (
+          {bookings.map((booking) => (
             <tr
-              key={b.id}
+              key={booking.id}
               className={`hover:bg-gray-50 ${
-                b.status === "cancelled" ? "text-gray-400" : ""
+                booking.status === "cancelled" ? "text-gray-400" : ""
               }`}
             >
-              <td className="border p-2 font-mono">{b.ticketNo}</td>
-              <td className="border p-2">{b.name}</td>
-              <td className="border p-2">{b.email}</td>
-              <td className="border p-2">{b.seats}</td>
-              <td className="border p-2">{b.date}</td>
+              <td className="border p-2 font-mono">{booking.ticketNo}</td>
+              <td className="border p-2">{booking.name}</td>
+              <td className="border p-2">{booking.email}</td>
+              <td className="border p-2">{booking.seats}</td>
+              <td className="border p-2">{booking.date}</td>
               <td
                 className={`border p-2 font-semibold ${
-                  b.status === "confirmed" ? "text-green-600" : "text-red-500"
+                  booking.status === "confirmed" ? "text-green-600" : "text-red-500"
                 }`}
               >
-                {b.status === "confirmed" ? "จองแล้ว" : "ยกเลิก"}
+                {booking.status === "confirmed" ? "จองแล้ว" : "ยกเลิก"}
               </td>
             </tr>
           ))}

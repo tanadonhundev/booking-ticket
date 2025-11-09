@@ -5,29 +5,25 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import Link from "next/link";
-import { ComponentProps } from "react";
 
-type Role = "admin" | "user";
+export const NavMenu = async ({ ...props }) => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const isAdmin = session?.user?.role === "admin";
 
-interface NavMenuProps extends ComponentProps<typeof NavigationMenu> {
-  role: Role;
-}
-
-export const NavMenu = ({ role, ...props }: NavMenuProps) => {
-
-  console.log(role)
-  // กำหนดเมนูตาม role
-  const menuItems =
-    role === "user"
-      ? [
-          { label: "จองตั๋ว", href: "/" },
-          { label: "ยกเลิกจองตั๋ว", href: "/cancel" },
-        ]
-      : [
-          { label: "รายการจองทั้งหมด", href: "/admin/bookings" },
-          { label: "จัดการตั๋ว", href: "/admin/tickets" },
-        ];
+  const menuItems = isAdmin
+    ? [
+        { label: "รายการจองทั้งหมด", href: "/admin/bookings" },
+        { label: "จัดการตั๋ว", href: "/admin/tickets" },
+      ]
+    : [
+        { label: "จองตั๋ว", href: "/" },
+        { label: "ยกเลิกจองตั๋ว", href: "/cancel" },
+      ];
 
   return (
     <NavigationMenu {...props}>

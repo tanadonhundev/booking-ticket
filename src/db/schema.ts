@@ -76,17 +76,13 @@ export const ticket = mysqlTable(
   "ticket",
   {
     id: int("id").autoincrement().notNull(),
-    name: varchar("name", { length: 100 }).notNull(), // ชื่อตั๋ว เช่น “คอนเสิร์ต A”
+    name: varchar("name", { length: 100 }).notNull(),
     price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-    // จำนวนทั้งหมดที่ขายได้
-    total: int("total").notNull(),
-    // จำนวนคงเหลือ
+    capacity: int("capacity").notNull(),
     remaining: int("remaining").notNull(),
-    // สถานะว่าง / เต็ม
     status: mysqlEnum("status", ["available", "sold_out"])
       .notNull()
       .default("available"),
-    // เวลาที่สร้าง
     createdAt: timestamp("created_at", { mode: "string" }).default(
       sql`(now())`
     ),

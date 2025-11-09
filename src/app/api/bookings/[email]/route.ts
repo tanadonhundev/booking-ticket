@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest } from "next/server";
 import db from "@/db";
-import { booking } from "@/db/schema";
+import { booking, ticket } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function GET(
@@ -10,11 +10,20 @@ export async function GET(
 ) {
   try {
     const { email } = await ctx.params;
-
     // Query หา bookings ตาม email
-    const result = await (await db)
-      .select()
+    const result = await (
+      await db
+    )
+      .select({
+        id: booking.id,
+        name: booking.name,
+        email: booking.email,
+        capacity: booking.capacity,
+        ticket_name: ticket.name,
+        createdAt: booking.createdAt,
+      })
       .from(booking)
+      .leftJoin(ticket, eq(booking.ticketId, ticket.id))
       .where(eq(booking.email, email));
 
     if (!result || result.length === 0) {
