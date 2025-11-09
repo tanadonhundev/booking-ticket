@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { CancelTicket } from "@/components/app/CancelTicket";
+import { AddTicketForm } from "@/components/app/AddTicketForm";
 
 type Ticket = {
   id: number;
@@ -16,6 +17,7 @@ type Ticket = {
 
 export default function TicketPage() {
   const [loading, setLoading] = useState(false);
+  const [openCancel, setOpenCanCel] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -38,13 +40,20 @@ export default function TicketPage() {
 
   const handleCancelTicket = (ticketId: number) => {
     setSelectedTicketId(ticketId);
+    setOpenCanCel(true);
+  };
+
+  const handleAddTicket = () => {
     setOpen(true);
   };
 
   if (loading) return <p>กำลังโหลด...</p>;
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">รายการตั๋วทั้งหมด</h1>
+      <div className="flex space-x-5">
+        <h1 className="text-2xl font-bold mb-4">รายการตั๋วทั้งหมด</h1>
+        <Button onClick={() => handleAddTicket()}>เพิ่มตั๋ว</Button>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-200">
           <thead className="bg-gray-100">
@@ -84,9 +93,14 @@ export default function TicketPage() {
         </table>
       </div>
       <CancelTicket
+        open={openCancel}
+        onOpenChange={setOpenCanCel}
+        ticketId={selectedTicketId}
+        onSuccess={fetchTickets}
+      />
+      <AddTicketForm
         open={open}
         onOpenChange={setOpen}
-        ticketId={selectedTicketId}
         onSuccess={fetchTickets}
       />
     </div>

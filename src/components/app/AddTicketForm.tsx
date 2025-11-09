@@ -17,27 +17,28 @@ import axios from "axios";
 import { toast } from "sonner";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
+  nameTicket: z.string().min(1, "Name is required"),
+  price: z
+    .string()
+    .transform((val) => parseFloat(val.replace(/[^0-9.]/g, "")))
+    .refine((val) => !isNaN(val), "ราคาต้องเป็นตัวเลขที่ถูกต้อง"),
   capacity: z
     .string()
-    .transform((val) => parseFloat(val.replace(/[^0-9.]/g, ""))) // e.g., "$1,000" → 1000
+    .transform((val) => parseFloat(val.replace(/[^0-9.]/g, "")))
     .refine((val) => !isNaN(val), "ราคาต้องเป็นตัวเลขที่ถูกต้อง"),
 });
 
-type AddBookingFormProps = {
+type AddTicketFormProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ticketId: number | null;
   onSuccess?: () => void;
 };
 
-export function AddBookingForm({
+export function AddTicketForm({
   open,
   onOpenChange,
-  ticketId,
   onSuccess,
-}: AddBookingFormProps) {
+}: AddTicketFormProps) {
   const {
     register,
     handleSubmit,
@@ -49,14 +50,12 @@ export function AddBookingForm({
 
   const handleOnSubmit = async (data: any) => {
     const formData = {
-      ticket_id: ticketId,
-      email: data.email,
-      name: data.name,
+      name: data.nameTicket,
+      price: data.price,
       capacity: data.capacity,
     };
-
     try {
-      const res = await axios.post("/api/bookings", formData);
+      const res = await axios.post("/api/ticket/admin", formData);
       reset();
       onOpenChange(false);
       toast.success(res.data.message);
@@ -73,29 +72,33 @@ export function AddBookingForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>จองตั๋ว</DialogTitle>
+          <DialogTitle>เพิ่มตั๋ว</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleOnSubmit)}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">
-                Name
+                Name Ticket
               </Label>
-              <Input id="name" className="col-span-3" {...register("name")} />
-              {errors.name && (
+              <Input
+                id="name"
+                className="col-span-3"
+                {...register("nameTicket")}
+              />
+              {errors.nameTicket && (
                 <p className="text-red-500 col-span-4 ml-28">
-                  {errors.name.message}
+                  {errors.nameTicket.message}
                 </p>
               )}
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="title" className="text-right">
-                Email
+              <Label htmlFor="price" className="text-right">
+                Price
               </Label>
-              <Input id="email" className="col-span-3" {...register("email")} />
-              {errors.email && (
+              <Input id="price" className="col-span-3" {...register("price")} />
+              {errors.price && (
                 <p className="text-red-500 col-span-4 ml-28">
-                  {errors.email.message}
+                  {errors.price.message}
                 </p>
               )}
             </div>
@@ -104,7 +107,7 @@ export function AddBookingForm({
                 Capacity
               </Label>
               <Input
-                id="price"
+                id="capacity"
                 className="col-span-3"
                 {...register("capacity")}
               />
