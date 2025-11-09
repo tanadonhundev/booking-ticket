@@ -12,7 +12,7 @@ type Booking = {
   createdAt: string;
 };
 
-export default function AdminBookingList() {
+export default function BookingPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 

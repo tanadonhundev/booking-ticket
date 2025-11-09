@@ -38,7 +38,6 @@ export default function CancelPage() {
 
   return (
     <div>
-      {" "}
       <div style={{ padding: "20px", maxWidth: "800px", margin: "auto" }}>
         <h2>ค้นหาการจองเพื่อตรวจสอบ / ยกเลิก</h2>
 

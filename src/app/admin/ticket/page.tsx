@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
+import { CancelTicket } from "@/components/app/CancelTicket";
 
 type Ticket = {
   id: number;
@@ -13,9 +14,11 @@ type Ticket = {
   status: "available" | "sold_out";
 };
 
-export default function Page() {
+export default function TicketPage() {
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const fetchTickets = async () => {
     try {
@@ -33,9 +36,14 @@ export default function Page() {
     fetchTickets();
   }, []);
 
+  const handleCancelTicket = (ticketId: number) => {
+    setSelectedTicketId(ticketId);
+    setOpen(true);
+  };
+
   if (loading) return <p>กำลังโหลด...</p>;
   return (
-    <main className="p-8 max-w-4xl mx-auto">
+    <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">รายการตั๋วทั้งหมด</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-200">
@@ -66,13 +74,21 @@ export default function Page() {
                   {ticket.status === "available" ? "ว่าง" : "เต็ม"}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  <Button>ลบ</Button>
+                  <Button onClick={() => handleCancelTicket(ticket.id)}>
+                    ลบ
+                  </Button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </main>
+      <CancelTicket
+        open={open}
+        onOpenChange={setOpen}
+        ticketId={selectedTicketId}
+        onSuccess={fetchTickets}
+      />
+    </div>
   );
 }
