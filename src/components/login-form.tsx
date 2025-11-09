@@ -51,7 +51,7 @@ const LoginForm = () => {
             // get session (client side)
             const { data: session } = await authClient.getSession();
             if (session?.user.role === "admin") {
-              router.replace("/admin");
+              router.replace("/admin/booking");
             } else if (session?.user.role === "user") {
               router.replace("/");
             }

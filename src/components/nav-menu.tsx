@@ -17,8 +17,8 @@ export const NavMenu = async ({ ...props }) => {
 
   const menuItems = isAdmin
     ? [
-        { label: "รายการจองทั้งหมด", href: "/admin/bookings" },
-        { label: "จัดการตั๋ว", href: "/admin/tickets" },
+        { label: "รายการจองทั้งหมด", href: "/admin/booking" },
+        { label: "จัดการตั๋ว", href: "/admin/ticket" },
       ]
     : [
         { label: "จองตั๋ว", href: "/" },

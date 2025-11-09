@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { AddBookingForm } from "@/components/app/AddBookingForm";
 import { Button } from "@/components/ui/button";
 
 type Ticket = {
@@ -14,11 +13,9 @@ type Ticket = {
   status: "available" | "sold_out";
 };
 
-export default function TicketTable() {
+export default function Page() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
-  const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
 
   const fetchTickets = async () => {
     try {
@@ -36,18 +33,10 @@ export default function TicketTable() {
     fetchTickets();
   }, []);
 
-  const handleBookClick = (ticketId: number) => {
-    setSelectedTicketId(ticketId);
-    setOpen(true);
-  };
-
   if (loading) return <p>กำลังโหลด...</p>;
-
   return (
     <main className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        🚌 ระบบขายตั๋วออนไลน์
-      </h1>
+      <h1 className="text-2xl font-bold mb-4">รายการตั๋วทั้งหมด</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-200">
           <thead className="bg-gray-100">
@@ -77,21 +66,13 @@ export default function TicketTable() {
                   {ticket.status === "available" ? "ว่าง" : "เต็ม"}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  <Button onClick={() => handleBookClick(ticket.id)}>
-                    จอง
-                  </Button>
+                  <Button>ลบ</Button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <AddBookingForm
-        open={open}
-        onOpenChange={setOpen}
-        ticketId={selectedTicketId}
-        onSuccess={fetchTickets}
-      />
     </main>
   );
 }

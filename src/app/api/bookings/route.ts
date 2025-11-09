@@ -83,8 +83,17 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   const db = await conn;
 
-  const bookings = await db.select().from(booking);
+  const bookings = await db
+    .select({
+      id: booking.id,
+      name: booking.name,
+      email: booking.email,
+      capacity: booking.capacity,
+      ticket_name: ticket.name,
+      createdAt: booking.createdAt,
+    })
+    .from(booking)
+    .leftJoin(ticket, eq(booking.ticketId, ticket.id));
 
   return NextResponse.json(bookings, { status: 200 });
 }
-

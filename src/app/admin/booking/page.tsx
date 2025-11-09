@@ -6,11 +6,10 @@ import { useEffect, useState } from "react";
 type Booking = {
   id: string;
   name: string;
+  ticket_name: string;
   email: string;
-  ticketNo: string;
-  seats: number;
-  date: string;
-  status: "confirmed" | "cancelled";
+  capacity: number;
+  createdAt: string;
 };
 
 export default function AdminBookingList() {
@@ -43,34 +42,21 @@ export default function AdminBookingList() {
       <table className="border-collapse border border-gray-300 w-full text-left text-sm">
         <thead className="bg-gray-100">
           <tr>
-            <th className="border p-2">หมายเลขตั๋ว</th>
-            <th className="border p-2">ชื่อ</th>
+            <th className="border p-2">ชื่อตั๋ว</th>
+            <th className="border p-2">ชื่อคนจอง</th>
             <th className="border p-2">อีเมล</th>
-            <th className="border p-2">จำนวนที่นั่ง</th>
+            <th className="border p-2">จำนวน</th>
             <th className="border p-2">วันที่จอง</th>
-            <th className="border p-2">สถานะ</th>
           </tr>
         </thead>
         <tbody>
           {bookings.map((booking) => (
-            <tr
-              key={booking.id}
-              className={`hover:bg-gray-50 ${
-                booking.status === "cancelled" ? "text-gray-400" : ""
-              }`}
-            >
-              <td className="border p-2 font-mono">{booking.ticketNo}</td>
+            <tr key={booking.id} className={`hover:bg-gray-50`}>
+              <td className="border p-2">{booking.ticket_name}</td>
               <td className="border p-2">{booking.name}</td>
               <td className="border p-2">{booking.email}</td>
-              <td className="border p-2">{booking.seats}</td>
-              <td className="border p-2">{booking.date}</td>
-              <td
-                className={`border p-2 font-semibold ${
-                  booking.status === "confirmed" ? "text-green-600" : "text-red-500"
-                }`}
-              >
-                {booking.status === "confirmed" ? "จองแล้ว" : "ยกเลิก"}
-              </td>
+              <td className="border p-2">{booking.capacity}</td>
+              <td className="border p-2">{booking.createdAt}</td>
             </tr>
           ))}
         </tbody>

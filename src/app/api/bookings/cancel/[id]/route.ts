@@ -15,7 +15,7 @@ export async function GET(
       return Response.json({ message: "Invalid booking ID" }, { status: 400 });
     }
 
-    // ✅ หาข้อมูล booking
+    // หาข้อมูล booking
     const [existingBooking] = await (await db)
       .select()
       .from(booking)
@@ -27,10 +27,10 @@ export async function GET(
 
     const { ticketId, capacity } = existingBooking;
 
-    // ✅ ลบ booking
+    // ลบ booking
     await (await db).delete(booking).where(eq(booking.id, bookingId));
 
-    // ✅ อัปเดตจำนวนตั๋ว
+    // อัปเดตจำนวนตั๋ว
     await (
       await db
     )
