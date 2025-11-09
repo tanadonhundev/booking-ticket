@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { authClient } from "@/lib/auth-client";
 import { AddBookingForm } from "@/components/app/AddBookingForm";
 import { Button } from "@/components/ui/button";
 
@@ -91,6 +90,7 @@ export default function TicketTable() {
         open={open}
         onOpenChange={setOpen}
         ticketId={selectedTicketId}
+        onSuccess={fetchTickets}
       />
     </main>
   );

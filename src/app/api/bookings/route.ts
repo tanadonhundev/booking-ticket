@@ -27,16 +27,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ✅ อัปเดตจำนวนตั๋ว
+    //  ดึงข้อมูล ticket เพื่อเช็ค remaining ก่อน
+    const ticketData = await db
+      .select()
+      .from(ticket)
+      .where(eq(ticket.id, ticket_id));
+
+    if (ticketData.length === 0) {
+      return NextResponse.json(
+        { message: "Ticket not found" },
+        { status: 404 }
+      );
+    }
+
+    const remaining = ticketData[0].remaining;
+
+    //  เช็ค capacity > remaining → บอกว่าเต็ม / ไม่พอ
+    if (capacity > remaining) {
+      return NextResponse.json(
+        { message: "Not enough tickets available" },
+        { status: 400 }
+      );
+    }
+
+    //  อัปเดตจำนวนตั๋ว
     await db
       .update(ticket)
       .set({
-        remaining: sql`GREATEST(${ticket.remaining} - ${capacity}, 0)`,
-        status: sql`IF(GREATEST(${ticket.remaining} - ${capacity}, 0) <= 0, 'sold_out', 'available')`,
+        remaining: sql`${ticket.remaining} - ${capacity}`,
+        status: sql`IF(${ticket.remaining} - ${capacity} <= 0, 'sold_out', 'available')`,
       })
       .where(eq(ticket.id, ticket_id));
 
-    // ✅ เพิ่มข้อมูลการจอง
+    // เพิ่มข้อมูลการจอง
     await db.insert(booking).values({
       ticketId: ticket_id,
       capacity: capacity,
@@ -45,7 +68,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: name + "booked successfully" },
+      { message: `${name} booked successfully` },
       { status: 200 }
     );
   } catch (err) {

@@ -29,12 +29,14 @@ type AddBookingFormProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   ticketId: number | null;
+  onSuccess?: () => void;
 };
 
 export function AddBookingForm({
   open,
   onOpenChange,
   ticketId,
+  onSuccess,
 }: AddBookingFormProps) {
   const {
     register,
@@ -54,10 +56,11 @@ export function AddBookingForm({
     };
 
     try {
-      const res = await axios.post("/api/book", formData); // เปลี่ยนเป็น POST
+      const res = await axios.post("/api/bookings", formData); // เปลี่ยนเป็น POST
       reset();
       onOpenChange(false);
       toast.success(res.data.message);
+      onSuccess?.();
     } catch (error: any) {
       console.error(error.response?.data.message);
       toast.error(error.response?.data.message);
