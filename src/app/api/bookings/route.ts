@@ -79,3 +79,12 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function GET() {
+  const db = await conn;
+
+  const bookings = await db.select().from(booking);
+
+  return NextResponse.json(bookings, { status: 200 });
+}
+
