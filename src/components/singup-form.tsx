@@ -62,6 +62,7 @@ const SignUpForm = () => {
         onError: (ctx) => {
           // display the error message
           toast.error(ctx.error.message);
+          setIsLoading(false);
         },
         onFinally: () => {
           setIsLoading(false);
