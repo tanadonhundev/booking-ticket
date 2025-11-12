@@ -35,9 +35,8 @@ export default function BookingPage() {
   if (loading) return <p>กำลังโหลด...</p>;
 
   return (
-    <main className="p-8">
+    <main className="p-8 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">รายการจองทั้งหมด</h1>
-      <p className="text-lg mb-2">จำนวนที่ว่าง: 200</p>
 
       <table className="border-collapse border border-gray-300 w-full text-left text-sm">
         <thead className="bg-gray-100">

@@ -55,7 +55,7 @@ const LoginForm = () => {
           // console.log("success", ctx.data);
           const { data: session } = await authClient.getSession();
           if (session?.user.role === "admin") {
-            router.replace("/product");
+            router.replace("/admin/booking");
           } else if (session?.user.role === "user") {
             router.replace("/");
           }

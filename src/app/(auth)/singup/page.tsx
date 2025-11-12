@@ -1,9 +1,9 @@
-import SignUpFrome from "@/components/singup-form";
+import SignUpForm from "@/components/singup-form";
 
-export default function SingupPage() {
+export default function SingUpPage() {
   return (
-    <div >
-      <SignUpFrome/>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <SignUpForm />
     </div>
   );
 }

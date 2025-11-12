@@ -49,7 +49,7 @@ export default function TicketPage() {
 
   if (loading) return <p>กำลังโหลด...</p>;
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="p-8 max-w-7xl mx-auto">
       <div className="flex space-x-5">
         <h1 className="text-2xl font-bold mb-4">รายการตั๋วทั้งหมด</h1>
         <Button onClick={() => handleAddTicket()}>เพิ่มตั๋ว</Button>

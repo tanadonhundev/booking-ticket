@@ -1,9 +1,9 @@
-
 import LoginForm from "@/components/login-form";
 
 export default function LoginPage() {
-
   return (
-      <div><LoginForm/></div>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <LoginForm/>
+    </div>
   );
 }
