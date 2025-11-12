@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Web App Assignment
 
-## Getting Started
+โปรเจกต์นี้เป็นการบ้านสำหรับการประเมินทักษะการพัฒนา Fullstack Web Application  
+โดยใช้ **Next.js** เป็น framework หลัก (รวมทั้ง frontend และ backend)  
+พร้อมระบบ **BetterAuth**, **Drizzle ORM**, และ **Shadcn UI**
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🧩 Tech Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Next.js v16 (App Router)** – ใช้ทั้งฝั่ง frontend + backend (API routes)  
+- **BetterAuth** – ระบบ authentication สำหรับจัดการ session/token  
+- **Drizzle ORM** – ORM เชื่อมต่อฐานข้อมูล (MySQL)  
+- **Shadcn UI** – Component library สำหรับ UI ที่สวยและปรับแต่งง่าย  
+- **TypeScript** – เพื่อความปลอดภัยของ type และลด bug  
+- **Tailwind CSS** – สำหรับจัดการ style อย่างรวดเร็ว  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ⚙️ การติดตั้งและรันโปรเจกต์
 
-## Learn More
+### 1. Clone โปรเจกต์
+    git clone https://github.com/tanadonhundev/booking-ticket.git
+    cd booking-ticket
+### 2. ติดตั้ง dependencies
+    npm install
+### 3. ตั้งค่า environment variables
+    DATABASE_URL="mysql://root:P@ssword@localhost/booking-ticket"
 
-To learn more about Next.js, take a look at the following resources:
+    DB_HOST=localhost
+    DB_USER=root
+    DB_PASSWORD=P@ssword
+    DB_DATABASE=booking-ticket
+    DB_PORT=3306
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    BETTER_AUTH_SECRET=P3YfR7wTR5DOTWmPFpaSMpdhtOeAguBW
+    BETTER_AUTH_URL=http://localhost:3000 #อย่าลืมแก้ domain จริง
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
-## Deploy on Vercel
+### 4. รัน migration (Drizzle)
+    npx drizzle-kit push
+### 5. รันโปรเจกต์
+    npm run dev
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
