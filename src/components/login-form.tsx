@@ -12,71 +12,77 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(4, "Password must be at least 4 characters long"),
+  email: z
+    .string()
+    .min(1, { message: "ป้อนข้อมูลอีเมลด้วย" })
+    .email({ message: "รูปแบบอีเมลไม่ถูกต้อง" })
+    .trim(),
+  password: z.string().min(4, { message: "รหัสผ่านต้องมี 4 ตัวขึ้นไป" }).trim(),
 });
 
 const LoginForm = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       email: "",
       password: "",
     },
-    mode: "onChange",
     resolver: zodResolver(formSchema),
   });
 
-  const handleOnSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
     await authClient.signIn.email(
       {
         email: data.email,
         password: data.password,
       },
       {
-        onRequest: (ctx) => {
-          //show loading
-          console.log("loading", ctx.body);
+        onRequest: () => {
+          // console.log("loading", ctx.body);
         },
-        onSuccess: async (ctx) => {
-          //redirect to the dashboard or sign in page
-          console.log("success", ctx.data);
-          // get session (client side)
+        onSuccess: async () => {
+          // console.log("success", ctx.data);
           const { data: session } = await authClient.getSession();
           if (session?.user.role === "admin") {
-            router.replace("/admin/booking");
-            router.refresh();
+            router.replace("/product");
+          } else if (session?.user.role === "user") {
+            router.replace("/");
           }
-          // router.replace("/");
           toast.success("เข้าสู่ระบบสำเร็จ");
         },
         onError: (ctx) => {
-          // display the error message
+          console.log(ctx.error);
           toast.error(ctx.error.message);
+        },
+        onFinally: () => {
+          setIsLoading(false);
         },
       }
     );
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/70">
-      <div className="relative max-w-sm w-full border rounded-xl px-8 py-8 shadow-lg/5 dark:shadow-xl bg-card overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center w-3xl">
+      <div className="relative max-w-sm w-full border rounded-xl px-8 py-8 shadow-lg/5 dark:shadow-xl bg-linear-to-b from-muted/50 dark:from-transparent to-card overflow-hidden">
         <div className="relative isolate flex flex-col items-center">
-          <>logo</>
-          <p className="mt-4 text-xl font-semibold tracking-tight">
+          <p className="mt-4 text-3xl font-semibold tracking-tight">
             เข้าสู่ระบบ
           </p>
           <Form {...form}>
             <form
               className="w-full space-y-6"
-              onSubmit={form.handleSubmit(handleOnSubmit)}
+              onSubmit={form.handleSubmit(onSubmit)}
             >
               <FormField
                 control={form.control}
@@ -114,11 +120,36 @@ const LoginForm = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Continue with Email
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="w-full flex items-center justify-center gap-2"
+              >
+                {isLoading && (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                )}
+                {isLoading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
               </Button>
             </form>
           </Form>
+
+          <div className="mt-5 space-y-5">
+            <Link
+              href="/"
+              className="text-sm block underline text-muted-foreground text-center"
+            >
+              กลับสู่หน้าหลัก
+            </Link>
+            <p className="text-sm text-center">
+              ยังไม่ได้เป็นสมาชิก?
+              <Link
+                href="/singup"
+                className="ml-1 underline text-muted-foreground"
+              >
+                สมัครสามาชิก
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
